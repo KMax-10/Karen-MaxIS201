@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Flashcard Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #flashcard {
+            font-size: 3rem;
+            margin: 20px;
+            font-weight: bold;
+        }
+        .piano {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+            position: relative;
+            width: fit-content;
+        }
+        .key {
+            width: 60px;
+            height: 300px;
+            margin: 0;
+            background: white;
+            border: 1px solid black;
+            display: inline-block;
+        }
+        .key.black {
+            width: 40px;
+            height: 180px;
+            background: black;
+            position: absolute;
+            left: calc(100% / 7 * var(--black-key-index));
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        .key[data-note="C#"] { left: 55px; }
+        .key[data-note="D#"] { left: 125px; }
+        .key[data-note="F#"] { left: 245px; }
+        .key[data-note="G#"] { left: 310px; }
+        .key[data-note="A#"] { left: 375px; }
+        .key.correct {
+            background: lightgreen;
+        }
+        .key.wrong {
+            background: lightcoral;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Music Flashcard Game</h1>
+    <p id="instructions">Click the correct piano key for the displayed note!</p>
+    <div id="flashcard">A</div>
+    <div class="piano">
+        <div class="key-wrapper">
+            <div class="key" data-note="C"></div>
+            <div class="key black" data-note="C#"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="D"></div>
+            <div class="key black" data-note="D#"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="E"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="F"></div>
+            <div class="key black" data-note="F#"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="G"></div>
+            <div class="key black" data-note="G#"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="A"></div>
+            <div class="key black" data-note="A#"></div>
+        </div>
+        <div class="key-wrapper">
+            <div class="key" data-note="B"></div>
+        </div>
+    </div>
+    <p id="feedback"></p>
+    <script>
+        const notes = ["C", "D", "E", "F", "G", "A", "B", "C#", "D#", "F#", "G#", "A#"];
+        const flashcard = document.getElementById("flashcard");
+        const keys = document.querySelectorAll(".key");
+        const feedback = document.getElementById("feedback");
+
+        let currentNote = "A";
+
+        function pickRandomNote() {
+            return notes[Math.floor(Math.random() * notes.length)];
+        }
+
+        function resetKeys() {
+            keys.forEach(key => {
+                key.classList.remove("correct", "wrong");
+            });
+        }
+
+        function showNextNote() {
+            currentNote = pickRandomNote();
+            flashcard.textContent = currentNote;
+            feedback.textContent = "";
+            resetKeys();
+        }
+
+        keys.forEach(key => {
+            key.addEventListener("click", () => {
+                const selectedNote = key.dataset.note;
+                if (selectedNote === currentNote) {
+                    key.classList.add("correct");
+                    feedback.textContent = "Correct!";
+                    setTimeout(showNextNote, 1000);
+                } else {
+                    key.classList.add("wrong");
+                    feedback.textContent = "Try again!";
+                }
+            });
+        });
+
+        // Initialize game
+        showNextNote();
+    </script>
+</body>
+</html>
